@@ -40,7 +40,7 @@ public class Employeecontroller {
 
 	public Employee getEmployee(@PathVariable Integer employeeId) {
 		
-		Optional<Employee> employee =employeeRepository.findById(employeeId)
+		Optional<Employee> employee = employeeRepository.findById(employeeId);
 		
 		return null;
 	}
