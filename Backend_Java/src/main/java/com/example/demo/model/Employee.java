@@ -1,5 +1,9 @@
 package com.example.demo.model;
 
+
+@Entity
+@Table(name = "employee")
+
 public class Employee {
 
 	private Integer employeeId;
