@@ -22,7 +22,7 @@ public class Employeecontroller {
 	@Autowired
 	EmployeeRepository employeeRepository;
 
-	private List<Employee> data = new ArrayList<Employee>();
+
 
 	@GetMapping("/employee")
 	public List<Employee> getEmployees() {
@@ -38,43 +38,47 @@ public class Employeecontroller {
 
 	@GetMapping("/employee/{employeeId}")
 
-	public Employee getEmployee(@PathVariable Integer employeeId) {
+	public Optional<Employee> getEmployee(@PathVariable Integer employeeId) {
 		
-		Optional<Employee> employee =employeeRepository.findById(employeeId)
+		Optional<Employee> employee =employeeRepository.findById(employeeId);
 		
 		return null;
 	}
 
 	@PutMapping("employee/{employeeId}")
 	public Employee updateEmployee(@PathVariable Integer employeeId, @RequestBody Employee body)  {
-		for (int i = 0; i < data.size(); i++) {
-			if (employeeId == data.get(i).getEmployeeId()) {
-				data.get(i).setFirstName(body.getFirstName());
-				data.get(i).setLastName(body.getLastName());
-				data.get(i).setSalary(body.getSalary());
-				
-				return data.get(i); 
-			}
+		
+		
+		Optional<Employee> employee = employeeRepository.findById(employeeId);
+		
+		if(employee.isPresent()) {
+			
+			Employee employeeEdit = employee.get();			
+			employeeEdit.setFirstName(body.getFirstName());
+			employeeEdit.setLastName(body.getLastName());
+			employeeEdit.setSalary(body.getSalary());
+			employeeEdit.setEmployeeId(body.getEmployeeId());
+			
+			return employeeRepository.save(employeeEdit);
+		
+			
+			return employeeEdit;
+		}else {
+			
+			return null;
 		}
-		return null;
 	}
+		
+		
 	
 	@DeleteMapping("employee/{employeeId}")
 	public String deleteemploye(@PathVariable Integer employeeId) {
-		for (int i = 0; i < data.size(); i++) {
-			if (employeeId == data.get(i).getEmployeeId()) {
-				data.remove(i);
-				return "delate success";
-			}
-		}	
-		return "employee no found";	
-	}
-
-	
-	
-	
-	
-	
-
-	
+		Optional<Employee> employee = employeeRepository.findById(employeeId);
+	    
+	    if (employee.isPresent()) {
+	        employeeRepository.delete(employee.get());
+	        return "delete success";
+	    } else {
+	        return "employee not found";
+	    }
 	}
